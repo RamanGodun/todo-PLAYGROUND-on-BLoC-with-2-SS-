@@ -1,13 +1,13 @@
 part of 'home_page.dart';
 
-/// 🔄 [StateShapeToggleIcon] - Toggles between Listener-Based and StreamSubscription-Based state propagation.
+/// 🔄 **[StateShapeToggleIcon]** - Toggles between Listener-Based and StreamSubscription-Based state propagation.
 class StateShapeToggleIcon extends StatelessWidget {
   const StateShapeToggleIcon({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isListenerStateShape = context.select<AppSettingsCubit, bool>(
-      (cubit) => cubit.state.isUsingListenerStateShapeForAppFeatures,
+    final isListenerStateShape = context.select<AppSettingsBloc, bool>(
+      (bloc) => bloc.state.isUsingListenerStateShapeForAppFeatures,
     );
 
     final stateShapeIcon = isListenerStateShape
@@ -17,23 +17,32 @@ class StateShapeToggleIcon extends StatelessWidget {
 
     return IconButton(
       icon: Icon(stateShapeIcon, color: iconColor),
-      onPressed: () => _toggleStateShape(context, isListenerStateShape),
+      onPressed: () => _toggleStateShape(context),
     );
   }
 
-  /// 🔄 Toggles between Listener-Based and StreamSubscription-Based state propagation.
-  void _toggleStateShape(BuildContext context, bool isListenerStateShape) {
-    context.read<AppSettingsCubit>().toggleStateShape();
+  /// 🔄 **Dispatches event to toggle between Listener-Based and StreamSubscription-Based state propagation.**
+  void _toggleStateShape(BuildContext context) {
+    context.read<AppSettingsBloc>().add(ToggleStateShapeEvent());
 
-    // 🌟 Show overlay with correct message and icon
+    // 🌟 Show overlay notification with appropriate message and icon
+    final isListenerStateShape = context
+        .read<AppSettingsBloc>()
+        .state
+        .isUsingListenerStateShapeForAppFeatures;
+
     final overlayMessage = isListenerStateShape
-        ? AppStrings.statePropagationSSS
-        : AppStrings.statePropagationLSS;
-    final overlayIcon = isListenerStateShape
-        ? AppConstants.changeCircleIcon
-        : AppConstants.syncIcon;
+        ? AppStrings.statePropagationLSS
+        : AppStrings.statePropagationSSS;
 
-    OverlayNotificationService.showOverlay(context,
-        message: overlayMessage, icon: overlayIcon);
+    final overlayIcon = isListenerStateShape
+        ? AppConstants.syncIcon
+        : AppConstants.changeCircleIcon;
+
+    OverlayNotificationService.showOverlay(
+      context,
+      message: overlayMessage,
+      icon: overlayIcon,
+    );
   }
 }

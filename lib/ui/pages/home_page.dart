@@ -4,7 +4,7 @@ import 'package:todo_app_playground_4_bloc_two_ss/ui/widgets/text_widget.dart';
 
 import '../../domain/app_constants/app_constants.dart';
 import '../../domain/app_constants/app_strings.dart';
-import '../../domain/state/app_settings/app_settings_cubit.dart';
+import '../../domain/state/app_settings/app_settings_bloc.dart';
 import '../../domain/utils_and_services/helpers.dart';
 import '../../domain/utils_and_services/overlay_service.dart';
 

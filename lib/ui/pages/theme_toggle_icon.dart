@@ -1,13 +1,13 @@
 part of 'home_page.dart';
 
-/// 🌗 [ThemeToggleIcon] - Toggles between light and dark mode.
+/// 🌗 **[ThemeToggleIcon]** - Toggles between light and dark mode.
 class ThemeToggleIcon extends StatelessWidget {
   const ThemeToggleIcon({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = context.select<AppSettingsCubit, bool>(
-      (cubit) => cubit.state.isDarkTheme,
+    final isDarkMode = context.select<AppSettingsBloc, bool>(
+      (bloc) => bloc.state.isDarkTheme,
     );
 
     final themeIcon =
@@ -16,15 +16,16 @@ class ThemeToggleIcon extends StatelessWidget {
 
     return IconButton(
       icon: Icon(themeIcon, color: iconColor),
-      onPressed: () => _toggleTheme(context, isDarkMode),
+      onPressed: () => _toggleTheme(context),
     );
   }
 
-  /// 🕹️ Toggles the theme between light and dark mode.
-  void _toggleTheme(BuildContext context, bool isDarkMode) {
-    context.read<AppSettingsCubit>().toggleTheme(!isDarkMode);
+  /// 🕹️ **Dispatches event to toggle between light and dark mode.**
+  void _toggleTheme(BuildContext context) {
+    final isDarkMode = context.read<AppSettingsBloc>().state.isDarkTheme;
+    context.read<AppSettingsBloc>().add(ToggleThemeEvent(!isDarkMode));
 
-    // 🌟 Show overlay with correct message and icon
+    // 🌟 Show overlay notification with appropriate message and icon
     final overlayMessage =
         isDarkMode ? AppStrings.lightModeEnabled : AppStrings.darkModeEnabled;
     final overlayIcon =

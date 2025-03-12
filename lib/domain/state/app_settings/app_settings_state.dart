@@ -1,10 +1,6 @@
-part of 'app_settings_cubit.dart';
+part of 'app_settings_bloc.dart';
 
-/// 🎛️ **[AppSettingsState]** - Represents the application settings state, includes:
-/// - **🔄 State Shape Mode:** `Listener` vs. `StreamSubscription`.
-/// - **🌗 Theme Mode:** Light / Dark.
-
-/// Used in **[AppSettingsCubit]** for managing UI preferences.
+/// 🎛️ **[AppSettingsState]** - Represents the application settings [AppSettingsBloc] state.
 class AppSettingsState extends Equatable {
   final AppStateShapeManagement stateShapeManagement;
   final bool isDarkTheme;
@@ -33,7 +29,7 @@ class AppSettingsState extends Equatable {
     );
   }
 
-  /// 🔍 **Equality check using `Equatable` for efficient state comparisons.**
+  /// 🔍 **Overrides equality checks for better performance.**
   @override
   List<Object> get props => [stateShapeManagement, isDarkTheme];
 

@@ -6,10 +6,8 @@ import 'package:path_provider/path_provider.dart';
 
 import 'domain/app_constants/app_strings.dart';
 import 'domain/config/observer/app_bloc_observer.dart';
-import 'domain/state/app_settings/app_settings_cubit.dart';
+import 'domain/state/app_settings/app_settings_bloc.dart';
 import 'domain/config/loader/loader_cubit.dart';
-
-import 'domain/utils_and_services/show_dialog.dart';
 import 'ui/pages/home_page.dart';
 
 /// 🚀 **[main] - Application entry point.**
@@ -21,20 +19,23 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   /// 🌐 **Global Loader Cubit** - Manages loading state across the app.
-  final globalLoaderCubit = GlobalLoaderCubit();
+  final globalLoader = GlobalLoaderCubit();
+
   // 🛠️ **Set up a global BLoC observer**
-  Bloc.observer = AppBlocObserver(globalLoaderCubit: globalLoaderCubit);
+  Bloc.observer = AppBlocObserver(globalLoaderCubit: globalLoader);
 
   /// 💾 **Initialize Hydrated Storage** (State Persistence)
-  HydratedBloc.storage = await HydratedStorage.build(
+  final storage = await HydratedStorage.build(
     storageDirectory: kIsWeb
         ? HydratedStorageDirectory.web
         : HydratedStorageDirectory(
             (await getApplicationDocumentsDirectory()).path),
   );
+  HydratedBloc.storage = storage;
+  // HydratedBloc.storage.clear(); // ? for test mode
 
   /// 🏁 **Launch the app**
-  runApp(StateManagementProvider(globalLoaderCubit: globalLoaderCubit));
+  runApp(StateManagementProvider(globalLoaderCubit: globalLoader));
 }
 
 /// 📦 **[StateManagementProvider] - Provides all BLoC dependencies**
@@ -53,28 +54,8 @@ class StateManagementProvider extends StatelessWidget {
         BlocProvider(create: (_) => globalLoaderCubit),
 
         /// 🎨 **App Settings Provider** (Manages Theme & State Shape)
-        BlocProvider(create: (_) => AppSettingsCubit()),
+        BlocProvider(create: (_) => AppSettingsBloc()),
       ],
-      child: GlobalLoaderProvider(globalLoaderCubit: globalLoaderCubit),
-    );
-  }
-}
-
-/// ⏳ **[GlobalLoaderProvider] - Wraps the app with global loading management**
-/// - Uses **BlocListener** to listen for global loading state changes.
-/// - Displays **Loading Dialog** when loading is active.
-class GlobalLoaderProvider extends StatelessWidget {
-  final GlobalLoaderCubit globalLoaderCubit;
-
-  const GlobalLoaderProvider({super.key, required this.globalLoaderCubit});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<GlobalLoaderCubit, bool>(
-      bloc: globalLoaderCubit,
-      listener: (context, isLoading) => isLoading
-          ? DialogService.showLoadingDialog(context)
-          : DialogService.closeDialog(context),
       child: const AppView(),
     );
   }
@@ -87,7 +68,9 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppSettingsCubit, AppSettingsState>(
+    return BlocBuilder<AppSettingsBloc, AppSettingsState>(
+      buildWhen: (previous, current) =>
+          previous.isDarkTheme != current.isDarkTheme,
       builder: (context, state) {
         return MaterialApp(
           title: AppStrings.appTitle,
