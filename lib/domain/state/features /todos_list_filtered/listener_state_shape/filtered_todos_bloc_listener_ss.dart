@@ -3,7 +3,6 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import '../../../../models/todo_model.dart';
 
-
 part 'filtered_todos_event.dart';
 part 'filtered_todos_state.dart';
 
