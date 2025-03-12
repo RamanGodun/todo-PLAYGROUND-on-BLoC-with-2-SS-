@@ -9,17 +9,18 @@ import 'domain/config/observer/app_bloc_observer.dart';
 import 'domain/utils_and_services/bloc_exports.dart';
 import 'ui/pages/home_page.dart';
 
-/// 🚀 **[main] - Application entry point.**
+/// 🚀 **[main] - Application Entry Point**
 /// - Initializes **HydratedBloc** for state persistence.
 /// - Sets up **BlocObserver** for global state monitoring.
-/// - Runs the app wrapped with **StateManagementProvider**.
+/// - Launches the app wrapped with **StateManagementProvider**.
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 🛠️ **Set up a global BLoC observer**
+  /// 🛠️ **Set up a global BLoC observer** (for debugging & state monitoring)
   Bloc.observer = AppBlocObserver();
 
-  /// 💾 **Initialize Hydrated Storage** (State Persistence)
+  /// 💾 **Initialize Hydrated Storage** (Persistent State Management)
   final storage = await HydratedStorage.build(
     storageDirectory: kIsWeb
         ? HydratedStorageDirectory.web
@@ -27,15 +28,13 @@ void main() async {
             (await getApplicationDocumentsDirectory()).path),
   );
   HydratedBloc.storage = storage;
-  // HydratedBloc.storage.clear(); // ? for test mode
+  // HydratedBloc.storage.clear(); // ? Use this for testing with a fresh state
 
-  /// 🏁 **Launch the app**
+  /// 🏁 **Launch the App**
   runApp(const StateManagementProvider());
 }
 
 /// 📦 **[StateManagementProvider] - Provides all BLoC dependencies**
-/// - Registers **AppSettingsBloc**.
-/// - Manages **Listener-based & Stream Subscription-based** state shapes.
 class StateManagementProvider extends StatelessWidget {
   const StateManagementProvider({super.key});
 
@@ -45,11 +44,13 @@ class StateManagementProvider extends StatelessWidget {
       providers: [
         /// 🎨 **App Settings Provider** (Manages Theme & State Shape)
         BlocProvider(create: (_) => AppSettingsBloc()),
+
+        /// ✅ **Core Business Logic Providers** (ToDo Features)
         BlocProvider<TodoListBloc>(create: (context) => TodoListBloc()),
         BlocProvider<TodoFilterBloc>(create: (context) => TodoFilterBloc()),
         BlocProvider<TodoSearchBloc>(create: (context) => TodoSearchBloc()),
 
-        /// 🟧 Providers for "Listeners" state-shape
+        /// 🟧 **Providers for Listener-Based State Shape**
         BlocProvider<ActiveTodoCountBlocWithListenerStateShape>(
             create: (context) => ActiveTodoCountBlocWithListenerStateShape(
                   todoListBloc: context.read<TodoListBloc>(),
@@ -58,34 +59,34 @@ class StateManagementProvider extends StatelessWidget {
             create: (context) => FilteredTodosBlocWithListenerStateShape(
                 initialTodos: context.read<TodoListBloc>().state.todos)),
 
-        /// 🟦 Providers for "Stream Subscription" state-shape
+        /// 🟦 **Providers for Stream Subscription-Based State Shape**
         BlocProvider<ActiveTodoCountBlocWithStreamSubscriptionStateShape>(
           create: (context) =>
               ActiveTodoCountBlocWithStreamSubscriptionStateShape(
-            todoListBloc: BlocProvider.of<TodoListBloc>(context),
+            todoListBloc: context.read<TodoListBloc>(),
           ),
         ),
         BlocProvider<FilteredTodosBlocWithStreamSubscriptionStateShape>(
             create: (context) =>
                 FilteredTodosBlocWithStreamSubscriptionStateShape(
                     initialTodos: context.read<TodoListBloc>().state.todos,
-                    todoFilterBloc: BlocProvider.of<TodoFilterBloc>(context),
-                    todoSearchBloc: BlocProvider.of<TodoSearchBloc>(context),
-                    todoListBloc: BlocProvider.of<TodoListBloc>(context))),
+                    todoFilterBloc: context.read<TodoFilterBloc>(),
+                    todoSearchBloc: context.read<TodoSearchBloc>(),
+                    todoListBloc: context.read<TodoListBloc>())),
       ],
       child: const AppView(),
     );
   }
 }
 
-/// 🎨 **[AppView] - Builds the main MaterialApp**
-/// - Listens for theme changes via **AppSettingsBloc**.
+/// 🎨 **[AppView] - Builds the Main `MaterialApp`**
 class AppView extends StatelessWidget {
   const AppView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AppSettingsBloc, AppSettingsState>(
+      /// 🚀 **Rebuilds only when the theme changes**
       buildWhen: (previous, current) =>
           previous.isDarkTheme != current.isDarkTheme,
       builder: (context, state) {

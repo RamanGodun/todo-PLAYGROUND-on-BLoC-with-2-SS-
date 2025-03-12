@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/app_constants/app_constants.dart';
 import '../../domain/app_constants/app_strings.dart';
 import '../../domain/models/todo_model.dart';
 import '../../domain/utils_and_services/bloc_exports.dart';
@@ -17,6 +16,8 @@ class SlidableTodoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Helpers.getColorScheme(context);
+
     return Slidable(
       key: ValueKey(todo.id),
 
@@ -26,8 +27,8 @@ class SlidableTodoItem extends StatelessWidget {
         children: [
           SlidableAction(
             onPressed: (_) => DialogService.editTodo(context, todo),
-            backgroundColor: AppConstants.darkPrimaryColor,
-            foregroundColor: AppConstants.darkForegroundColor,
+            backgroundColor: colorScheme.primary,
+            foregroundColor: colorScheme.onPrimary,
             label: AppStrings.editButton,
           ),
         ],
@@ -40,8 +41,8 @@ class SlidableTodoItem extends StatelessWidget {
           SlidableAction(
             onPressed: (_) =>
                 context.read<TodoListBloc>().add(RemoveTodoEvent(todo: todo)),
-            backgroundColor: AppConstants.errorColor,
-            foregroundColor: AppConstants.darkForegroundColor,
+            backgroundColor: colorScheme.error,
+            foregroundColor: colorScheme.onError,
             icon: Icons.delete,
             label: AppStrings.deleteButton,
           ),

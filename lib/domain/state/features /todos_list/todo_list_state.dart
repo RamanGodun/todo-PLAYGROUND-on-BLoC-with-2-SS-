@@ -1,19 +1,17 @@
 part of 'todo_list_bloc.dart';
 
+/// 📌 **[TodoListStateOnBloc] - Represents the current state of the ToDo list.**
 final class TodoListStateOnBloc extends Equatable {
-  const TodoListStateOnBloc({
-    required this.todos,
-  });
-
-  factory TodoListStateOnBloc.initial() {
-    return const TodoListStateOnBloc(todos: [
-      // Todo(id: '1', desc: 'Clean the room'),
-      // Todo(id: '2', desc: 'Wash the dish'),
-      // Todo(id: '3', desc: 'Do homework'),
-    ]);
-  }
-
+  /// 📋 **List of ToDos in the current state.**
   final List<Todo> todos;
+
+  /// 🆕 **Constructor** - Requires a list of `todos`.
+  const TodoListStateOnBloc({required this.todos});
+
+  /// 🔄 **Returns the initial empty state.**
+  factory TodoListStateOnBloc.initial() {
+    return const TodoListStateOnBloc(todos: []);
+  }
 
   @override
   List<Object> get props => [todos];
@@ -21,6 +19,7 @@ final class TodoListStateOnBloc extends Equatable {
   @override
   String toString() => 'TodoListState(todos: $todos)';
 
+  /// ✏️ **Creates a copy of the state with updated properties.**
   TodoListStateOnBloc copyWith({
     List<Todo>? todos,
   }) {

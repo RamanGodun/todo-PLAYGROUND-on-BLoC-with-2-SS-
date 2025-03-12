@@ -5,12 +5,15 @@ import '../../ui/widgets/text_widget.dart';
 import '../app_constants/app_constants.dart';
 import 'helpers.dart';
 
-/// 🌟 **[OverlayNotificationService]** – Displays animated overlay messages in macOS/iOS style.
+/// 🌟 **[OverlayNotificationService] - A service for displaying animated overlay notifications.**
 class OverlayNotificationService {
   static OverlayEntry? _overlayEntry;
 
-  /// 📌 **Show Overlay Notification**
-  /// Displays an animated overlay message with an [icon] and [message].
+  /// 📌 **Displays an overlay notification with an icon and message.**
+  ///
+  /// - Removes any existing overlay before inserting a new one.
+  /// - Automatically disappears after **2 seconds**.
+  /// - Animates using **fade-in** and **scale effects**.
   static void showOverlay(BuildContext context,
       {required String message, required IconData icon}) {
     _removeOverlay();
@@ -26,15 +29,18 @@ class OverlayNotificationService {
     Future.delayed(const Duration(seconds: 2), () => _removeOverlay());
   }
 
-  /// 🛑 **Remove Overlay**
-  /// Closes and removes the overlay from the screen.
+  /// 🛑 **Removes any existing overlay.**
+  /// - Ensures that only **one overlay is displayed** at a time.
   static void _removeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
   }
 }
 
-/// 🎭 **_AnimatedOverlayWidget** - Beautiful animated notification widget.
+/// 🎭 **[_AnimatedOverlayWidget] - The animated UI widget for overlay notifications.**
+/// - Uses **flutter_hooks** for animation control.
+/// - Applies **fade and elastic scale animations**.
+/// - Dynamically adapts **theme colors** (dark/light mode).
 class _AnimatedOverlayWidget extends HookWidget {
   final String message;
   final IconData icon;
@@ -43,6 +49,7 @@ class _AnimatedOverlayWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// 🎬 **Animation controller for fade-in and scale effects.**
     final animationController = useAnimationController(
       duration: const Duration(milliseconds: 600),
     )..forward();
@@ -56,7 +63,7 @@ class _AnimatedOverlayWidget extends HookWidget {
           .chain(CurveTween(curve: Curves.elasticOut)),
     );
 
-    // 🎨 **Get theme-aware colors dynamically**
+    // 🎨 **Dynamic theme-aware colors**
     final colorScheme = Helpers.getColorScheme(context);
     final isDarkMode = colorScheme.brightness == Brightness.dark;
     final backgroundColor = isDarkMode
@@ -73,7 +80,7 @@ class _AnimatedOverlayWidget extends HookWidget {
     return Stack(
       children: [
         Positioned(
-          // 🔽 Centers the overlay message on the screen
+          /// 🔽 **Centers the overlay message on the screen.**
           top: MediaQuery.of(context).size.height * 0.4,
           left: MediaQuery.of(context).size.width * 0.1,
           right: MediaQuery.of(context).size.width * 0.1,

@@ -14,9 +14,10 @@ import '../widgets/todo_header.dart';
 part 'state_shape_toggle_icon.dart';
 part 'theme_toggle_icon.dart';
 
-/// 🏠 [HomePage] - The main screen of the application.
-/// Provides toggles for switching between light/dark themes and state shape modes
-/// (ListenerStateShape / StreamSubscriptionStateShape).
+/// 🏠 **[HomePage] - Main Screen of the Application**
+/// - Provides UI for toggling **Theme Mode** (Light / Dark).
+/// - Allows switching between **State Shape Modes** (`Listener-Based` / `Stream Subscription-Based`).
+/// - Displays a **ToDo List** with filtering and search functionality.
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -37,10 +38,10 @@ class HomePage extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: ListView(
-            children: [
-              const SizedBox(height: 20.0),
+            children: const [
+              SizedBox(height: 20.0),
               SearchAndFilterTodo(),
-              const ShowTodosWidget(),
+              ShowTodosWidget(),
             ],
           ),
         ),
@@ -50,7 +51,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-/// ➕ [AddTodoFAB] - Floating Action Button для створення нової тудушки.
+/// ➕ **[AddTodoFAB] - Floating Action Button for Creating New ToDo**
 class AddTodoFAB extends StatelessWidget {
   const AddTodoFAB({super.key});
 

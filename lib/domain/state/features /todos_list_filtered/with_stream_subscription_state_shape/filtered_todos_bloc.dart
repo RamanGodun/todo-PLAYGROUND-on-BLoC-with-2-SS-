@@ -10,49 +10,65 @@ import '../../todos_list/todo_list_bloc.dart';
 part 'filtered_todos_event.dart';
 part 'filtered_todos_state.dart';
 
+/// 📌 **[FilteredTodosBlocWithStreamSubscriptionStateShape]**
+/// - Manages **filtered ToDos** using a **Stream Subscription-Based State Shape**.
+/// - **Listens to multiple state streams** (TodoList, TodoFilter, TodoSearch).
+/// - **Updates state dynamically** as changes occur.
 class FilteredTodosBlocWithStreamSubscriptionStateShape extends Bloc<
     FilteredTodosEventWithStreamSubscriptionStateShape,
     FilteredTodosStateOnBlocWithStreamSubscriptionStateShape> {
+  /// 📡 **Stream Subscriptions** to listen for state changes.
   late StreamSubscription todoFilterSubscription;
   late StreamSubscription todoSearchSubscription;
   late StreamSubscription todoListSubscription;
 
+  /// 📋 **Initial ToDos list.**
   final List<Todo> initialTodos;
 
+  /// 🔄 **Bloc dependencies for filtering and searching.**
   final TodoFilterBloc todoFilterBloc;
   final TodoSearchBloc todoSearchBloc;
   final TodoListBloc todoListBloc;
 
+  /// 🆕 **Constructor**
+  /// - Initializes with provided **ToDo list**, **filter**, and **search state**.
   FilteredTodosBlocWithStreamSubscriptionStateShape({
     required this.initialTodos,
     required this.todoFilterBloc,
     required this.todoSearchBloc,
     required this.todoListBloc,
   }) : super(FilteredTodosStateOnBlocWithStreamSubscriptionStateShape(
-            filteredTodos: initialTodos)) {
+          filteredTodos: initialTodos,
+        )) {
+    /// 🎯 **Listens for filter changes** and updates filtered ToDos.
     todoFilterSubscription =
         todoFilterBloc.stream.listen((TodoFilterStateOnBloc todoFilterState) {
-      setFilteredTodos();
+      _setFilteredTodos();
     });
 
+    /// 🔍 **Listens for search term updates** and updates the filtered list.
     todoSearchSubscription =
         todoSearchBloc.stream.listen((TodoSearchStateOnBloc todoSearchState) {
-      setFilteredTodos();
+      _setFilteredTodos();
     });
 
+    /// 📌 **Listens for ToDo list changes** and applies filtering.
     todoListSubscription =
         todoListBloc.stream.listen((TodoListStateOnBloc todoListState) {
-      setFilteredTodos();
+      _setFilteredTodos();
     });
 
+    /// 🔄 **Handles state updates based on computed filtered ToDos.**
     on<CalculateFilteredTodosEvent>((event, emit) {
       emit(state.copyWith(filteredTodos: event.filteredTodos));
     });
   }
 
-  void setFilteredTodos() {
+  /// 🔄 **Filters ToDos based on the active filter and search term.**
+  void _setFilteredTodos() {
     List<Todo> filteredTodos;
 
+    /// 📌 **Applies active filter** (All, Active, Completed).
     switch (todoFilterBloc.state.filter) {
       case Filter.active:
         filteredTodos = todoListBloc.state.todos
@@ -69,6 +85,7 @@ class FilteredTodosBlocWithStreamSubscriptionStateShape extends Bloc<
         break;
     }
 
+    /// 🔍 **Applies search term filtering.**
     if (todoSearchBloc.state.searchTerm.isNotEmpty) {
       filteredTodos = filteredTodos
           .where((Todo todo) => todo.desc
@@ -77,9 +94,11 @@ class FilteredTodosBlocWithStreamSubscriptionStateShape extends Bloc<
           .toList();
     }
 
+    /// 🚀 **Dispatches event to update the filtered ToDo state.**
     add(CalculateFilteredTodosEvent(filteredTodos: filteredTodos));
   }
 
+  /// 🛑 **Closes all active stream subscriptions** to prevent memory leaks.
   @override
   Future<void> close() {
     todoFilterSubscription.cancel();

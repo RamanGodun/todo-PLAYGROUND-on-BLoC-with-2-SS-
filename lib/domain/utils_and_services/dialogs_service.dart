@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../ui/widgets/create_todo.dart';
-import '../../ui/widgets/edit_todo.dart';
+import '../../ui/widgets/alert_dialogs/create_todo.dart';
+import '../../ui/widgets/alert_dialogs/edit_todo.dart';
 import '../models/todo_model.dart';
 
-/// 💬 **[DialogService]** - A service providing reusable dialogs throughout the app.
+/// 💬 **[DialogService] - A centralized service for managing app dialogs.**
+/// - Provides reusable dialogs for **creating, editing, and loading states**.
+/// - Ensures a **consistent UI/UX** across the application.
 abstract class DialogService {
-  /// 📝 **Shows a dialog for creating a new ToDo.**
+  /// 📝 **Opens a dialog for creating a new ToDo.**
   static void showCreateTodoDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -13,31 +15,25 @@ abstract class DialogService {
     );
   }
 
-  /// 🔄 **Shows a loading dialog with a centered `CircularProgressIndicator`.**
-  ///
-  /// This dialog is **non-dismissible**, preventing unintended closures.
+  /// 🔄 **Displays a loading dialog with a centered `CircularProgressIndicator`.**
   static void showLoadingDialog(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible: false, // ❌ Prevents accidental closing
+      barrierDismissible: false, // ❌ Prevents unintended dismissals
       builder: (context) => const Center(
         child: CircularProgressIndicator(),
       ),
     );
   }
 
-  /// ❌ **Closes any open dialogs.**
-  ///
-  /// Ensures a safe dismissal of dialogs if possible.
+  /// ❌ **Closes any currently open dialogs.**
   static void closeDialog(BuildContext context) {
     if (Navigator.of(context, rootNavigator: true).canPop()) {
       Navigator.of(context, rootNavigator: true).pop();
     }
   }
 
-  /// ✏️ **Opens a dialog for editing a ToDo.**
-  ///
-  /// Allows the user to modify the selected `todo` item.
+  /// ✏️ **Opens a dialog for editing an existing ToDo.**
   static void editTodo(BuildContext context, Todo todo) {
     showDialog(
       context: context,

@@ -5,18 +5,22 @@ import 'package:flutter/material.dart';
 /// Ensures that a function is only executed after a specified delay
 /// since the last time it was invoked.
 class Debounce {
-  /// ⏱ **Delay duration** (default: `500ms`).
+  /// ⏱ **Delay duration** (default: `300ms`).
   final int milliseconds;
-
   Timer? _timer;
 
   /// 🆕 **Constructor** (optional: `milliseconds` delay).
-  Debounce({this.milliseconds = 500});
+  Debounce({this.milliseconds = 300});
 
   /// 🚀 **Runs the provided action** after the debounce delay.
   /// If called again within the delay, the previous call is canceled.
   void run(VoidCallback action) {
     _timer?.cancel();
     _timer = Timer(Duration(milliseconds: milliseconds), action);
+  }
+
+  /// 🛑 **Disposes the timer when no longer needed.**
+  void dispose() {
+    _timer?.cancel();
   }
 }

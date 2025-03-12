@@ -1,5 +1,7 @@
 part of 'active_todo_count_bloc.dart';
 
+/// 📌 **[ActiveTodoCountEventWithStreamSubscriptionStateShape] - Base class for active ToDo count events.**
+/// - Defines events used in **Stream Subscription-Based State Shape**.
 sealed class ActiveTodoCountEventWithStreamSubscriptionStateShape
     extends Equatable {
   const ActiveTodoCountEventWithStreamSubscriptionStateShape();
@@ -8,13 +10,14 @@ sealed class ActiveTodoCountEventWithStreamSubscriptionStateShape
   List<Object> get props => [];
 }
 
+/// 🔢 **[CalculateActiveTodoCountEvent] - Triggers active ToDo count calculation.**
+/// - Fired when the count of active ToDos changes in **TodoListBloc**.
+/// - Ensures UI updates with the latest active task count.
 final class CalculateActiveTodoCountEvent
     extends ActiveTodoCountEventWithStreamSubscriptionStateShape {
-  const CalculateActiveTodoCountEvent({
-    required this.activeTodoCount,
-  });
-
   final int activeTodoCount;
+
+  const CalculateActiveTodoCountEvent({required this.activeTodoCount});
 
   @override
   String toString() =>

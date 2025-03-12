@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../domain/app_constants/app_constants.dart';
 import '../../domain/app_constants/app_strings.dart';
@@ -9,21 +10,27 @@ import '../../domain/utils_and_services/debounce.dart';
 import '../../domain/utils_and_services/helpers.dart';
 import 'text_widget.dart';
 
-/// 🔎 [SearchAndFilterTodo] - Widget for searching and filtering ToDo items.
-/// Provides a search bar and filter buttons to switch between different task categories.
-class SearchAndFilterTodo extends StatelessWidget {
-  SearchAndFilterTodo({super.key});
+/// 🔎 **[SearchAndFilterTodo] - ToDo Search & Filter Widget**
+/// - Uses **flutter_hooks** for better state management.
+/// - Implements a **debounce mechanism** to optimize search queries.
+/// - Provides **filter buttons** for different task categories.
 
-  /// ⏳ Implements a debounce mechanism to prevent excessive state updates.
-  final debounce = Debounce(milliseconds: 300);
+class SearchAndFilterTodo extends HookWidget {
+  const SearchAndFilterTodo({super.key});
 
   @override
   Widget build(BuildContext context) {
+    /// ⏳ **Creates a Debounce instance using `useMemoized`**
+    final debounce = useMemoized(() => Debounce(milliseconds: 300));
+
+    /// 🔄 **Disposes the debounce timer when widget is destroyed**
+    useEffect(() => () => debounce.dispose(), const []);
+
     return ListView(
       shrinkWrap: true,
       primary: true,
       children: [
-        /// 🔍 Search input field
+        /// 🔍 **Search input field**
         TextField(
           style: Helpers.getTextTheme(context).titleMedium,
           decoration: const InputDecoration(
@@ -44,7 +51,7 @@ class SearchAndFilterTodo extends StatelessWidget {
         ),
         const SizedBox(height: 10.0),
 
-        /// 🏷️ Filter buttons for task categories
+        /// 🏷️ **Filter buttons for task categories**
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -55,7 +62,7 @@ class SearchAndFilterTodo extends StatelessWidget {
           ],
         ),
 
-        /// ➖ Divider for UI separation
+        /// ➖ **Divider for UI separation**
         Divider(
           color: Helpers.getColorScheme(context).onSurface.withOpacity(0.3),
           thickness: 2.5,
