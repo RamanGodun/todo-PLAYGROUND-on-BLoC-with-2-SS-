@@ -31,9 +31,9 @@ abstract class AppStrings {
   // 🔄 **State Propagation Messages**
   // ────────────────────────────────────────────────────────────────────
   static const String statePropagationLSS =
-      'State Propagation:             "Listener-Based"';
+      'Current State Propagation:  "Listener-Based"';
   static const String statePropagationSSS =
-      'State Propagation:              "Stream Subscription"';
+      'Current State Propagation:  "Stream Subscription"';
 
   // ────────────────────────────────────────────────────────────────────
   // 🔍 **Search Bar**
