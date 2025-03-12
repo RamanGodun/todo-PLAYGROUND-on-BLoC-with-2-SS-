@@ -11,7 +11,6 @@ sealed class FilteredTodosEventWithListenerStateShape extends Equatable {
 /// 🔄 **[CalculateFilteredTodosEventWithListenerStateShape] - Updates the filtered ToDos list.**
 class CalculateFilteredTodosEventWithListenerStateShape
     extends FilteredTodosEventWithListenerStateShape {
-  
   /// 📋 **Filtered list of ToDos.**
   final List<Todo> filteredTodos;
 
