@@ -27,7 +27,9 @@ class HomePage extends StatelessWidget {
           StateShapeToggleIcon(),
         ],
       ),
-      body: const Center(child: TextWidget('Home page', TextType.smallHeadline),),
+      body: const Center(
+        child: TextWidget('Home page', TextType.smallHeadline),
+      ),
     ));
   }
 }

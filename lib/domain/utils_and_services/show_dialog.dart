@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 /// 💬 **[DialogService]** - A service providing reusable dialogs throughout the app.
 abstract class DialogService {
   /// 🔄 **Shows a loading dialog with a centered `CircularProgressIndicator`.**
